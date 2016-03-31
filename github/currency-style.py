@@ -15,30 +15,17 @@ def convert(string):
 def checkio(text):
 
     "Convert Euro style currency in dollars to US/UK style"
-    # if not re.search("Euro", text):
-    #     text = convert(text)
-    # else:
-    #     m = re.split(", ", text)
-    #     for index, item in enumerate(m):
-    #         # if "Euro" in item:
-    #         if not re.search(r"\.\d\d$",item): # unchange if already US Style
-    #             m[index] = convert(item)
-    #         text = ", ".join(m)
-    # print(text)
-
-    # m = re.split(", ", text)
-    # for index, item in enumerate(m):
-    #     if (not re.search(r"\.\d\d$",item)) and (not re.search(r"\,\d\d\d", item)): # unchange if already US Style
-    #         m[index] = convert(item)
-    #     text = ", ".join(m)
-
-    m = re.split("(, | )", text)
-    for index, item in enumerate(m):
-        if (not re.search(r"\.\d\d$",item)) and (not re.search(r"\,\d\d\d", item)): # unchange if already US Style
-            m[index] = convert(item)
-        text = "".join(m)
+    m = re.split("(, | |\.$|\n)", text)
     print(m)
-    print(text)
+    for index, item in enumerate(m):
+        if item and item[0] == "$":
+            if (not re.search(r"\.\d{0,2}$",item)) and item[-1].isdigit():
+                print("to check: "+ str(item))
+                if not re.search(r'\,\d{3}$',item):
+                    m[index] = convert(item)
+                    print("converted: "+str(m[index]))
+        text = "".join(m)
+    print("text="+text)
     return text
 
 if __name__ == '__main__':
@@ -54,3 +41,5 @@ if __name__ == '__main__':
                    "$1,234, $5,678 and $9", "Dollars without cents"
     assert checkio("$5.34") == "$5.34" , "1st Example"
     assert checkio("$4.545,45 is less than $5,454.54.") == "$4,545.45 is less than $5,454.54." , "1st Example"
+    assert checkio("$222,100,455") == "$222,100,455"
+
